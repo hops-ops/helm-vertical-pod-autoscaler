@@ -1,0 +1,7 @@
+apiVersion: helm.hops.ops.com.ai/v1alpha1
+kind: VerticalPodAutoscaler
+metadata:
+  name: vertical-pod-autoscaler
+  namespace: default
+spec:
+  clusterName: my-cluster

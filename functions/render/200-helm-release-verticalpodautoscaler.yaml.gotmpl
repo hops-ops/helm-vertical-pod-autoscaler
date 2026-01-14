@@ -1,0 +1,56 @@
+# code: language=yaml
+#
+# Helm release for VerticalPodAutoscaler
+#
+# Defaults:
+# - Enables recommender for resource recommendations
+# - Enables updater for automatic pod updates (can be disabled)
+# - Enables admission controller for mutating webhook
+#
+
+{{- $v := $state.verticalpodautoscaler }}
+
+---
+apiVersion: helm.m.crossplane.io/v1beta1
+kind: Release
+metadata:
+  name: {{ $v.releaseName }}
+  annotations:
+    {{ setResourceNameAnnotation "helm-release-verticalpodautoscaler" }}
+  labels: {{ $v.labels | toJson }}
+spec:
+  managementPolicies: {{ $v.managementPolicies | toJson }}
+  forProvider:
+    chart:
+      name: vertical-pod-autoscaler
+      repository: https://cowboysysop.github.io/charts
+      version: 11.1.1
+    namespace: {{ $v.namespace }}
+    {{- if $v.overrideAllValues }}
+    values:
+      {{- toYaml $v.overrideAllValues | nindent 6 }}
+    {{- else }}
+    values:
+      fullnameOverride: vertical-pod-autoscaler
+      nameOverride: vertical-pod-autoscaler
+      # Recommender provides resource recommendations
+      recommender:
+        enabled: true
+      # Updater evicts pods to apply new recommendations
+      # Set to false for recommendation-only mode (safer)
+      updater:
+        enabled: true
+      # Admission controller mutates pods on creation
+      admissionController:
+        enabled: true
+      # Install CRDs
+      crds:
+        install: true
+      {{- if $v.values }}
+      {{- toYaml $v.values | nindent 6 }}
+      {{- end }}
+    {{- end }}
+  rollbackLimit: 3
+  providerConfigRef:
+    name: {{ $v.providerConfigRef.name }}
+    kind: {{ $v.providerConfigRef.kind }}

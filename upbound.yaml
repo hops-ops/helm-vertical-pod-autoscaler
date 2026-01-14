@@ -1,0 +1,25 @@
+apiVersion: meta.dev.upbound.io/v2alpha1
+kind: Project
+metadata:
+  name: helm-vertical-pod-autoscaler
+spec:
+  dependsOn:
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.crossplane.io/crossplane-contrib/provider-helm
+    version: '>=v1.0.6'
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Function
+    package: xpkg.crossplane.io/crossplane-contrib/function-auto-ready
+    version: '>=v0.6.0'
+  description: Installs the Vertical Pod Autoscaler Helm chart for automatic resource
+    right-sizing.
+  license: Apache-2.0
+  maintainer: Patrick Lee Scott <pat@patscott.io>
+  readme: |
+    # helm-vertical-pod-autoscaler
+
+    Installs the Vertical Pod Autoscaler Helm chart using Crossplane and the Helm provider.
+    VerticalPodAutoscaler automatically adjusts CPU and memory requests for pods.
+  repository: ghcr.io/hops-ops/helm-vertical-pod-autoscaler
+  source: github.com/hops-ops/helm-vertical-pod-autoscaler

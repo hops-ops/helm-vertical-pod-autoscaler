@@ -1,0 +1,36 @@
+apiVersion: helm.hops.ops.com.ai/v1alpha1
+kind: VerticalPodAutoscaler
+metadata:
+  name: vertical-pod-autoscaler
+  namespace: default
+spec:
+  clusterName: production-cluster
+  namespace: kube-system
+  labels:
+    team: platform
+    environment: production
+  providerConfigRef:
+    name: production-cluster
+    kind: ProviderConfig
+  values:
+    # Recommender settings
+    recommender:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 500Mi
+        limits:
+          cpu: 200m
+          memory: 1Gi
+    # Disable updater for recommendation-only mode
+    updater:
+      enabled: false
+    # Admission controller settings
+    admissionController:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 200Mi
+        limits:
+          cpu: 200m
+          memory: 500Mi
